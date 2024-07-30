@@ -1,3 +1,7 @@
+from flask import Flask, jsonify
+
+app = Flask("server")
+
 #student data
 students = [
     {'id': '1', 'first_name': 'John', 'last_name': 'Doe', 'age': 18, 'grade': 'A'},
@@ -11,3 +15,45 @@ students = [
     {'id': '9', 'first_name': 'Ethan', 'last_name': 'Wilson', 'age': 19, 'grade': 'C'},
     {'id': '10', 'first_name': 'Isabella', 'last_name': 'Moore', 'age': 22, 'grade': 'B'}
 ]
+
+@app.route("/students/", methods=['GET'])
+def get_students():
+    return jsonify(students)
+
+
+@app.route("/old_students/", methods=['GET'])
+def get_old_students():
+    result = list(filter(lambda student: student['age'] > 20, students))
+    return jsonify(result)
+
+
+@app.route("/young_students/", methods=['GET'])
+def get_young_students():
+    result = list(filter(lambda student: student['age'] < 21, students))
+    return jsonify(result)
+
+
+@app.route("/advance_students/", methods=['GET'])
+def get_advance_students():
+    result = list(filter(lambda student: student['age'] < 21 and student['grade'] == 'A' , students))
+    return jsonify(result)
+
+
+@app.route("/student_names/", methods=['GET'])
+def get_student_names():
+    result = []
+    for student in students:
+        result.append({'first_name': student['first_name'], 'last_name': student['last_name']})
+    return jsonify(result)
+
+
+@app.route("/student_ages/", methods=['GET'])
+def get_student_ages():
+    result = []
+    for student in students:
+        result.append({"student_name": f"{student['first_name']} {student['last_name']}", 'age': student['age']})
+
+    return jsonify(result)
+
+
+app.run(debug=True, port=8000)
